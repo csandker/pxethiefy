@@ -6,7 +6,16 @@ This tool is heavily based on the tool [PXEThief](https://github.com/MWR-CyberSe
 While [PXEThief](https://github.com/MWR-CyberSec/PXEThief) is a Windows-based tool (and provides more features), `pxethiefy.py` has a limited feature set, but can be used from Linux hosts as well.
 **Shoutout and all credits go to [MWR-CyberSec](https://github.com/MWR-CyberSec/)**.
 
-This tool is a byproduct of SCCM research, which can be found in this blog: [TOOD](TODO)
+This tool is a byproduct of SCCM research, which can be found in this blog: [https://www.securesystems.de/blog/active-directory-spotlight-attacking-the-microsoft-configuration-manager/](https://www.securesystems.de/blog/active-directory-spotlight-attacking-the-microsoft-configuration-manager/)
+
+## Install 
+
+```sh
+$:> virtualenv -p python3 venv
+$:> source venv/bin/activate
+$:> sudo python3 -m pip3 install -r requirements.txt 
+$:> sudo python3 pxethiefy.py -h
+```
 
 ## Usage
 
