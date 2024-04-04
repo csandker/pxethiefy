@@ -13,8 +13,8 @@ This tool is a byproduct of SCCM research, which can be found in this blog: [htt
 ```sh
 $:> virtualenv -p python3 venv
 $:> source venv/bin/activate
-$:> sudo python3 -m pip install -r requirements.txt 
-$:> sudo python3 pxethiefy.py -h
+$:> sudo venv/bin/python3 -m pip install -r requirements.txt 
+$:> sudo venv/bin/python3 pxethiefy.py -h
 ```
 
 ## Usage
