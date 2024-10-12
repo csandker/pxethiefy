@@ -13,8 +13,15 @@ This tool is a byproduct of SCCM research, which can be found in this blog: [htt
 ```sh
 $:> virtualenv -p python3 venv
 $:> source venv/bin/activate
-$:> sudo python3 -m pip install -r requirements.txt 
-$:> sudo python3 pxethiefy.py -h
+## We need to send and receive raw packets, which usually requires sudo permissions, therefore you got two options here
+## Either install and run as sudo
+$:> sudo venv/bin/python3 -m pip install -r requirements.txt 
+$:> sudo venv/bin/python3 pxethiefy.py -h
+
+## OR install as normal user as follows
+$:> python3 -m pip install -r requirements.txt
+$:> sudo setcap CAP_NET_RAW=+eip /usr/bin/python3.8 ## change with your python3 version --> run ls -lah /usr/bin/python3* to check symlinks
+$:> python3 pxethiefy.py -h
 ```
 
 ## Usage
