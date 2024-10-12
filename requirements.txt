@@ -1,4 +1,4 @@
-scapy>=2.4.5
+scapy==2.4.5
 tftpy
 pycryptodome>=3.14.1
 lxml>=4.9.1
