@@ -7,6 +7,7 @@ from hashlib import *
 import math
 import struct
 from scapy.all import *
+from scapy.arch.unix import get_if_raw_hwaddr
 from Crypto.Cipher import AES,DES3
 import lxml.etree as ET
 import tftpy
@@ -132,7 +133,7 @@ def decrypt_media_file(path, password):
     return wf_decrypted_ts
 
 
-def start_sniffing(sniff_filter, timeout=10, count=100):
+def start_sniffing(sniff_filter, timeout=60, count=1000):
     global packets
     packets = sniff(filter=sniff_filter, timeout=timeout, count=count)
 
@@ -254,7 +255,9 @@ def request_boot_files_with_interface(interface, clientIPAddress, clientMacAddre
 def find_pxe_boot_servers(interface, clientMacAddress):
     ## Find PXE Servers
     pxe_server = []
+    timeout = 60
     log(f"Sending DHCP discover request to search for PXE servers...", MSG_TYPE_DEFAULT)
+    log(f"Sniffing on the network for responses. Timeout: {timeout}s...", MSG_TYPE_DEFAULT)
     log(f"--- Scapy output ---", MSG_TYPE_NOPREFIX)
     #   DHCP Option 93
     #    0000 == IA x86 PC (BIOS boot)
@@ -263,7 +266,7 @@ def find_pxe_boot_servers(interface, clientMacAddress):
     pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/IP(src="0.0.0.0", dst="255.255.255.255")/UDP(sport=68, dport=67)/BOOTP(chaddr=clientMacAddress)/DHCP(options=[("message-type", "request"), ("vendor_class_id", "PXEClient"), (93, b"\x00\x00"), "end"])
 
     # Start the sniffing a separate thread
-    sniff_thread = Thread(target=start_sniffing, args=("udp and dst host 255.255.255.255",))
+    sniff_thread = Thread(target=start_sniffing, args=("udp and dst host 255.255.255.255",timeout))
     sniff_thread.start()
     
     ## Wait some seconds to get the sniffing thread up and running
@@ -276,10 +279,11 @@ def find_pxe_boot_servers(interface, clientMacAddress):
     sniff_thread.join()
     log(f"--- Scapy output end ---", MSG_TYPE_NOPREFIX)
     for packet in packets:
-        dhcp_options = packet[DHCP].options
-        dhcp_server_ip = next((opt[1] for opt in dhcp_options if isinstance(opt, tuple) and opt[0] == "server_id"),None)
-        if(dhcp_server_ip):
-            pxe_server.append(dhcp_server_ip)
+        if(DHCP in packet):
+            dhcp_options = packet[DHCP].options
+            dhcp_server_ip = next((opt[1] for opt in dhcp_options if isinstance(opt, tuple) and opt[0] == "server_id"),None)
+            if(dhcp_server_ip):
+                pxe_server.append(dhcp_server_ip)
 
     return pxe_server
 
