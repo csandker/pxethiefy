@@ -1,0 +1,26 @@
+[project]
+name = "pxethiefy"
+version = "0.0.2"
+description = "pxethiefy is a tool to enumerate PXE boot media provided from an SCCM server in a target network by broadcasting for PXE servers, requesting offered boot media and trying to decrypt it."
+authors = [
+    {name = "Carsten Sandker",email = "carsten.sandker@googlemail.com"}
+]
+requires-python = ">=3.11,<4"
+readme = "Readme.md"
+dependencies = [
+    "scapy (>=2.4.5)",
+    "tftpy (>=0.8.7,<0.9.0)",
+    "pycryptodome (>=3.14.1)",
+    "lxml (>=4.9.1)"
+]
+
+[project.urls]
+homepage = "https://github.com/csandker/pxethiefy"
+repository = "https://github.com/csandker/pxethiefy"
+
+[project.scripts]
+pxethiefy = "pxethiefy:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
