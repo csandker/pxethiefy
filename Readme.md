@@ -37,7 +37,7 @@ $:> pipx ensurepath
 Then install `pxethiefy` using pipx:
 ```sh
 $:> pipx install git+https://github.com/csandker/pxethiefy
-$:> sudo ln -s ~/.local/bin/pxethiefy /usr/local/sbin/pxethiefy
+$:> sudo ln -s ~/.local/bin/pxethiefy /usr/local/sbin/pxethiefy     # Make pxethiefy available for sudo users
 
 ## You can now run pxethiefy as follows
 $:> sudo pxethiefy -h
