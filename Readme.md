@@ -10,6 +10,7 @@ This tool is a byproduct of SCCM research, which can be found in this blog: [htt
 
 ## Install 
 
+#### Using virtualenv
 ```sh
 $:> virtualenv -p python3 venv
 $:> source venv/bin/activate
@@ -23,6 +24,25 @@ $:> python3 -m pip install -r requirements.txt
 $:> sudo setcap CAP_NET_RAW=+eip /usr/bin/python3.8 ## change with your python3 version --> run ls -lah /usr/bin/python3* to check symlinks
 $:> python3 pxethiefy.py -h
 ```
+
+#### Using pipx
+
+Install pipx as per installation instructions: [https://pipx.pypa.io/stable/how-to/install-pipx/](https://pipx.pypa.io/stable/how-to/install-pipx/)
+Make sure that pipx is in your PATH:
+```sh
+$:> pipx ensurepath
+## Now restart your terminal or do "source ~/.bashrc" (or the equivalent for your shell) to update the PATH variable
+```
+
+Then install `pxethiefy` using pipx:
+```sh
+$:> pipx install git+https://github.com/csandker/pxethiefy
+$:> sudo ln -s ~/.local/bin/pxethiefy /usr/local/sbin/pxethiefy     # Make pxethiefy available for sudo users
+
+## You can now run pxethiefy as follows
+$:> sudo pxethiefy -h
+```
+
 
 ## Usage
 

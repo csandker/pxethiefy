@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import importlib
 import sys
 import argparse
 import binascii
@@ -15,7 +16,6 @@ import tftpy
 from threading import Thread
 from time import sleep
 
-gVersion = "0.0.2"
 ## --------------------------------------------------------- ##
 
 MSG_TYPE_NOCOLOR = ""
@@ -376,7 +376,7 @@ def print_banner():
    \ \__\  /  /\   \    \ \_______\  \ \__\ \ \__\ \__\ \__\ \_______\ \__\__/  / /    
     \|__| /__/ /\ __\    \|_______|   \|__|  \|__|\|__|\|__|\|_______|\|__|\___/ /     
           |__|/ \|__|                                                     \|___|/      
-                                                                                       v.{gVersion}
+                                                                                       v.{importlib.metadata.version("pxethiefy")}
                                                 Based on the original PXEThief by MWR-CyberSec
                                                      https://github.com/MWR-CyberSec/PXEThief/
 """)
