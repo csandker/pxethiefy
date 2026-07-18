@@ -3,7 +3,7 @@ name = "pxethiefy"
 version = "0.0.2"
 description = "pxethiefy is a tool to enumerate PXE boot media provided from an SCCM server in a target network by broadcasting for PXE servers, requesting offered boot media and trying to decrypt it."
 authors = [
-    {name = "Carsten Sandker",email = "carsten.sandker@googlemail.com"}
+    {name = "Carsten Sandker"}
 ]
 requires-python = ">=3.11,<4"
 readme = "Readme.md"
